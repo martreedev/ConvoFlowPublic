@@ -1,0 +1,208 @@
+.mainWrapperHome {
+  background-color: var(--gray);
+  width: 100% !important;
+  box-sizing: border-box;
+  padding: 0px;
+  font-family: Metropolis-Medium;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.supportedContinaer {
+  border: 1px white solid;
+  width: min-content;
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  margin: 25px auto;
+  background: white;
+  border-radius: 5px;
+  padding: 10px;
+}
+.supportedContinaer label {
+  color: rgb(185, 3, 3);
+  font-size: 20px;
+  font-family: Metropolis-Black;
+}
+.main-content {
+  display: flex;
+  justify-content: left;
+  align-items: flex-start;
+  flex-direction: column;
+  border-radius: 10px;
+  height: 100vh;
+  width: 100%;
+}
+.Home-Mic {
+  height: 100%;
+  width: 40vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  justify-content: flex-end;
+}
+.ExplainText {
+  position: absolute;
+  top: 0;
+  color: black;
+  margin: 15px 0;
+  background: rgba(247, 247, 247, 0.815);
+  box-shadow: 5px 5px 3px #11111179;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 25px;
+  transition: 2s;
+}
+.ExplainTextDisplayNone {
+  display: none;
+  transition: 2s;
+}
+.LiveText {
+  width: 100%;
+  font-family: Metropolis-Medium;
+  font-size: 17px;
+  padding: 6px;
+  height: 40%;
+  border: none;
+  background-color: var(--textInput);
+  box-shadow: 5px 5px 3px #1c1c1dd7;
+  color: white !important;
+  margin-top: 4ch;
+}
+.LiveText-p {
+  margin: 0 0 10px 0;
+  font-size: 15px;
+  color: rgb(105, 105, 105);
+}
+.Home-stopButton {
+  border: 0;
+  background: var(--textInput);
+  color: red;
+  font-size: 22px;
+  font-family: Metropolis-Medium;
+  align-self: flex-end;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 8px;
+  box-shadow: 5px 5px 3px #1c1c1dd7;
+  transition: 0.2s;
+  margin-top: 10px;
+}
+.Home-stopButtonInvis {
+  border: 0;
+  background: var(--gray);
+  color: var(--gray);
+  font-size: 22px;
+  font-family: Metropolis-Medium;
+  align-self: flex-end;
+  border-radius: 5px;
+  padding: 8px;
+  transition: 0.2s;
+  margin-top: 10px;
+}
+.Home-stopButton:hover {
+  filter: brightness(160%);
+  transition: 0.2s;
+  font-family: Metropolis-Medium;
+}
+.Home-TranscriptContainer {
+  flex: 1;
+  width: 100vw;
+  padding: 10px;
+  align-items: flex-start;
+  justify-content: center;
+}
+.Home-Container {
+  width: 100vw;
+  text-align: center;
+  min-height: 50vh;
+}
+
+.lol {
+  max-height: 100vh;
+}
+.Home-Transcript {
+  width: 97vw;
+  padding: 0 20px;
+  overflow: auto;
+  resize: none;
+  white-space: pre-wrap; /* enable wrapping */
+  word-wrap: break-word; /* break words if necessary */
+  font-family: Metropolis-Medium;
+  font-size: 17px;
+  min-height: 45vmin;
+  max-height: 45vmin;
+  border: none;
+  background-color: var(--textInput);
+  box-shadow: 5px 5px 3px #1c1c1dd7;
+  color: white !important;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+}
+.Transcript-HumanContainer {
+  padding: 25px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  max-height: 100px;
+}
+.Transcript-AIContainer {
+  padding: 25px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(51, 51, 51);
+  border-radius: 5px;
+  max-height: 100px;
+}
+.Transcript-AIIMG {
+  height: 28px;
+  margin-right: 10px;
+}
+.Transcript-HumanIMG {
+  height: 28px;
+  margin-right: 10px;
+  border-radius: 3px;
+}
+.Transcript-Human,
+.Transcript-AI {
+  min-width: 800px;
+  max-width: 800px;
+  max-height: 100px;
+  overflow-y: auto;
+}
+.RecordingButton {
+  background: 0;
+  border: 0;
+  cursor: pointer;
+}
+.RecordingIMG {
+  height: 70px;
+}
+.bottombuttonsContainer {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  margin: 10px;
+}
+@media only screen and (max-width: 768px) {
+  .Home-Transcript {
+    min-height: 45vmax;
+    max-height: 45vmax;
+  }
+  .Home-Mic {
+    width: 90vw;
+  }
+
+  .ExplainText {
+    font-size: 17px;
+  }
+  .Transcript-Human,
+  .Transcript-AI {
+    min-width: 200px;
+    max-width: 200px;
+  }
+}

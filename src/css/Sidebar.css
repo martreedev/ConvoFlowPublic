@@ -1,0 +1,41 @@
+.SidbarContainer {
+  background: var(--light-purple);
+  min-width: 200px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.Sidbar-ContentContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  flex-grow: 1;
+}
+.Sidbar-Content {
+  margin-top: 10px;
+  border-radius: 3px;
+  width: 90%;
+  padding: 12px 9px;
+
+  transition: 0.1s;
+  font-size: 16px;
+  background: 0;
+  border: 0;
+  margin: 5px 0;
+  text-align: left;
+  cursor: pointer;
+  overflow-wrap: break-word;
+}
+.Sidbar-Content:hover {
+  background: gray;
+  transition: 0.1s;
+}
+.audioImg {
+  height: 20px;
+  width: 20px;
+  margin-left: 10px;
+}
+.Sidbar-Account {
+  justify-self: flex-end;
+}
