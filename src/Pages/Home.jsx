@@ -57,6 +57,8 @@ export default function Home() {
   const [Relevance, setRelevance] = useState(0);
   const [Engagement, setEngagement] = useState(0);
   const [Initiative, setInitiative] = useState(0);
+  const [LastArrayLength, setLastArrayLength] = useState(0);
+
 
   const [isRecording, setisRecording] = useState(false);
   const [value, setValue] = useState("");
@@ -192,14 +194,22 @@ export default function Home() {
   }, [audio]); // Re-run the effect when 'audio' state changes
 
   const AnalyticsFetch = async () => {
+    let lastArr = JSON.parse(localStorage.getItem("conversation-data")) || [];
+
+    if (LastArrayLength != lastArr.length) {
+      setHasGottenAnalytics(false)
+      setLastArrayLength(lastArr.length)
+    }
     if (!HasGottenAnalytics) {
       const anal = getAnalytics().then((res) => {
         //console.log(res)
+        let convoHistroy = JSON.parse(localStorage.getItem("conversation-data")) || [];
         setUseOfLanguage(res[0].data);
         setAdaptibility(res[1].data);
         setRelevance(res[2].data);
         setEngagement(res[3].data);
         setInitiative(res[4].data);
+        setLastArrayLength(convoHistroy.length)
       });
       setHasGottenAnalytics(true);
     }
