@@ -4,7 +4,6 @@ import "../css/home.css";
 import "../css/slide1.css";
 import "../css/main.css";
 import "../css/Anylatics.css";
-import Sidebar from "../hooks/Sidebar";
 import { useSpeechRecognition } from "react-speech-kit";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";

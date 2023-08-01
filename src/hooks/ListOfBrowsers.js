@@ -1,4 +1,4 @@
-function SupportedBrowsers() {
+function SupportedBrowsers() {// list of supported browsers
     return (<div>
         <ul>
             <li>Chrome (desktop) Recommended</li>
