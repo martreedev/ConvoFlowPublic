@@ -35,73 +35,84 @@ import {
 import getAnalytics from "../js/convoAnalytics";
 
 export default function Home() {
-  const [HasRun, setHasRun] = useState(false);
-  const [showAnylatics, setShowAnylatics] = useState(false);
+  const [HasRun, setHasRun] = useState(false);// used to remove the analytics from local storage on page refresh
+  const [showAnylatics, setShowAnylatics] = useState(false);// conditional to render analytics page
   if (!HasRun) {
     localStorage.removeItem("analytics");
     localStorage.setItem("conversation-data", JSON.stringify([]));
     setHasRun(true);
   }
-  const [HasGottenAnalytics, setHasGottenAnalytics] = useState(false);
 
-  const [FirstTimeRunning, setFirstTimeRunning] = useState(true);
-  const [IsSpeaking, setIsSpeaking] = useState(false);
-  const [IsLoading, setIsLoading] = useState(false);
-  const [ErrorDidOccur, setErrorDidOccur] = useState(false);
-  const [audio, setAudio] = useState(null);
-  const [showLabel, setShowLabel] = useState(true);
-  const [showAnalyticsButton, setShowAnalyticsButton] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const [UseOfLanguage, setUseOfLanguage] = useState(0);
-  const [Adaptibility, setAdaptibility] = useState(0);
-  const [Relevance, setRelevance] = useState(0);
-  const [Engagement, setEngagement] = useState(0);
-  const [Initiative, setInitiative] = useState(0);
-  const [LastArrayLength, setLastArrayLength] = useState(0);
+  //AI speech states
+  const [audio, setAudio] = useState(null);// audio object for the Eleven labs api audio
+  const [IsSpeaking, setIsSpeaking] = useState(false);// if the AI is currently speaking
+  const [IsLoading, setIsLoading] = useState(false); // if the AI is currently loading speech
+
+  //User states
+  const [isRecording, setisRecording] = useState(false); // used to determine if the user microphone is currently being recorded
+  const [value, setValue] = useState("");// users transcripted voice data as text
+  const [showLabel, setShowLabel] = useState(true);// prevent user from utilizing microphone while AI is speaking or generating
+  const [UserStartConvo, setUserStartConvo] = useState(null);
+
+  //conversation states
+  const [FirstTimeRunning, setFirstTimeRunning] = useState(true);// if this is the first conversation of the session
+  const [LastArrayLength, setLastArrayLength] = useState(0);// the last recorded length of the conversation
+  const [swiper, setSwiper] = useState(null);// swiping the page down
+  const [ErrorDidOccur, setErrorDidOccur] = useState(false);// used to determine if an error occured at any point in GPT generation
 
 
-  const [isRecording, setisRecording] = useState(false);
-  const [value, setValue] = useState("");
-  const [swiper, setSwiper] = useState(null);
-  const { listen, listening, stop, supported } = useSpeechRecognition({
+  //analytics states
+  const [UseOfLanguage, setUseOfLanguage] = useState(0); //UseOfLanguage section of graph
+  const [Adaptibility, setAdaptibility] = useState(0); //Adaptibility section of graph
+  const [Relevance, setRelevance] = useState(0); //Relevance section of graph
+  const [Engagement, setEngagement] = useState(0);//Engagement section of graph
+  const [Initiative, setInitiative] = useState(0);//Initiative section of graph
+
+  const [isHovered, setIsHovered] = useState(false); // used to detect if mouse is above the ? button on the analytics popup
+  const [showAnalyticsButton, setShowAnalyticsButton] = useState(false); // renders the analytics button
+  const [HasGottenAnalytics, setHasGottenAnalytics] = useState(false);// if the user has previously generated their analytics
+
+
+  //speech recognition library
+  const { listen, stop, supported } = useSpeechRecognition({
     onResult: (result) => {
       setValue(result);
     },
   });
   ////////////////////
-  const [UserStartConvo, setUserStartConvo] = useState(null);
 
-  let ConvoList = JSON.parse(localStorage.getItem("conversation-data")) || [];
 
-  if (UserStartConvo) {
-  } else if (UserStartConvo == false) {
-    let prompt;
-    if (FirstTimeRunning) {
+  let ConvoList = JSON.parse(localStorage.getItem("conversation-data")) || [];// conversation pulled from local storage
+
+  // if the user doesnt wish to start the convo
+  if (UserStartConvo == false) {
+    if (FirstTimeRunning) {// if this is the first conversation of the session
+      //pull the conversation data from local storage
       let existingArray =
         JSON.parse(localStorage.getItem("conversation-data")) || [];
       let myObject = [
         "AI",
         "Hey there! Nice to meet you. I couldn't help but notice your friendly vibe. Mind if we strike up a conversation?",
       ];
+      // push the first conversation node into the array and save it back into local storage
       existingArray.push(myObject);
       localStorage.setItem("conversation-data", JSON.stringify(existingArray));
+
+      //set the audio state to the premade conversation audio
       let premade = new Audio(premadeAudio);
       premade.volume = 0.5;
       setAudio(premade);
-
-      prompt = `You are an AI conversation bot designed to help users practice their conversation abilities.if the humans asks any personal questions use fictional data instead. Encourage users to engage in diverse and meaningful conversations.Limit your response to a few sentences. pretend you started the conversation and this is what you said "Hey there! Nice to meet you. I couldn't help but notice your friendly vibe. Mind if we strike up a conversation?", this is what the human said: ${value}`;
       setFirstTimeRunning(false);
-    } else {
-      prompt = `You are an AI conversation bot designed to help users practice their conversation abilities.if the humans asks any personal questions use fictional data instead. Encourage users to engage in diverse and meaningful conversations.Limit your response to a few sentences: ${value}`;
     }
   }
+  //scrolls to the bottom of the conversation
   const scrollToBottom = () => {
     const transcriptDiv = document.querySelector(".Home-Transcript");
     transcriptDiv.scrollTop = transcriptDiv.scrollHeight;
   };
-
   useEffect(scrollToBottom, [ConvoList]);
 
+  // if there is an audio object in the usestate and this function is called it will pause it
   const stopAI = () => {
     if (audio) {
       audio.pause();
@@ -110,6 +121,7 @@ export default function Home() {
       setAudio(null);
     }
   };
+  // post convo analytics sections
   const data = [
     { name: "Use of Language", "Conversation Analysis": UseOfLanguage },
     { name: "Adaptability", "Conversation Analysis": Adaptibility },
@@ -117,59 +129,68 @@ export default function Home() {
     { name: "Engagement", "Conversation Analysis": Engagement },
     { name: "Initiative", "Conversation Analysis": Initiative },
   ];
+
+  // start recording the users mic
   const startRecording = () => {
     setErrorDidOccur(false);
     listen({ continuous: true });
     setisRecording(true);
-    setShowLabel(false); // Add this line
+    setShowLabel(false);
   };
-  const stopRecording = () => {
-    stop();
-    // spawn user chat element
+  //////////////////////////this is the big boy, future extraction of certain segments is a must, 
+  //                        but compromises had to be made for the time crunch
+
+  const stopRecording = () => {// function called when user presses the mic button after recording
+    stop();// stop recording user microphone
+
+    //pull convo array from local storage
     let existingArray =
       JSON.parse(localStorage.getItem("conversation-data")) || [];
-
+    //push the user microphone transcription into the array as a new convo node
     let myObject = ["Human", value];
     existingArray.push(myObject);
-
+    //store new convo array
     localStorage.setItem("conversation-data", JSON.stringify(existingArray));
 
-    if (existingArray.length + 1 > 3) {
-      setShowAnalyticsButton(true);
+    if (existingArray.length + 1 > 3) {//if the convo is longer than 3 messages
+      setShowAnalyticsButton(true);// show the analytics button
     }
     setisRecording(false);
-    if (value) {
+    if (value) {// if user has spoken at all
+      // pull conversation from local storage
       let existingArray =
         JSON.parse(localStorage.getItem("conversation-data")) || [];
-      let prompt;
-      if (existingArray.length > 0) {
-        prompt = convoHistroy();
+      let prompt;// declare prompt variable
+      if (existingArray.length > 0) {// if the conversation is not empty
+        prompt = convoHistroy();// set prompt equal to the conversation history
       } else {
+        //set conversation equal to this gpt prompt and the convo history
+        //(it remembers)
         prompt = `You are an AI conversation bot designed to help users practice their conversation abilities.if the humans asks any personal questions use fictional data instead. Encourage users to engage in diverse and meaningful conversations.Limit your response to a few sentences: ${value}`;
       }
 
       setIsLoading(true);
-      UseGpt(prompt).then((res) => {
-        if (res != "somethingbad-error") {
+      UseGpt(prompt).then((res) => {//use gpt function for uploading prompt and getting response
+        if (res != "somethingbad-error") {// if no error
           // send text to eleven labs to get audio
           handleTextToSpeech(res).then((blob) => {
             const tmp = new Audio(blob);
             tmp.volume = 0.5;
-            setAudio(tmp);
-            setIsLoading(false);
+            setAudio(tmp);// set the audio state to the returned audio object
             // spawn new chat element with ai text
             let existingArray =
               JSON.parse(localStorage.getItem("conversation-data")) || [];
 
-            const AItext = parseText(res);
+            const AItext = parseText(res);// parse the gpt response text
             let parsedStr = AItext.replace("AI: ", "");
             let myObject = ["AI", parsedStr];
-            existingArray.push(myObject);
+            existingArray.push(myObject);// push ai conversation node into conversation array
 
             localStorage.setItem(
               "conversation-data",
               JSON.stringify(existingArray)
             );
+            setIsLoading(false);
           });
         } else {
           setErrorDidOccur(true);
@@ -177,39 +198,38 @@ export default function Home() {
       });
     }
   };
+  // if an audio object is detected in the State then play it
   useEffect(() => {
     if (audio) {
       // Play the audio
       audio.play();
-      //console.log("audio started");
       setIsSpeaking(true);
-      audio.onended = () => {
-        //console.log("audio finished");
+
+      audio.onended = () => {// once the audio is finished reset the audio object state
         setIsSpeaking(false);
         setAudio(null);
       };
     }
-
-    // Clean up function
   }, [audio]); // Re-run the effect when 'audio' state changes
 
+  // function for fetching analytics
   const AnalyticsFetch = async () => {
     let lastArr = JSON.parse(localStorage.getItem("conversation-data")) || [];
 
-    if (LastArrayLength != lastArr.length) {
-      setHasGottenAnalytics(false)
-      setLastArrayLength(lastArr.length)
+    if (LastArrayLength != lastArr.length) {// if the current conversation length is not the same as the last recorded conversation length
+      setHasGottenAnalytics(false)// reset this state
+      setLastArrayLength(lastArr.length)// set the length equal to the current length
     }
     if (!HasGottenAnalytics) {
-      const anal = getAnalytics().then((res) => {
-        //console.log(res)
+      const anal = getAnalytics().then((res) => {// call the get analytics function
         let convoHistroy = JSON.parse(localStorage.getItem("conversation-data")) || [];
+        // set the graph data equal to the reponses from the getAnalytics function
         setUseOfLanguage(res[0].data);
         setAdaptibility(res[1].data);
         setRelevance(res[2].data);
         setEngagement(res[3].data);
         setInitiative(res[4].data);
-        setLastArrayLength(convoHistroy.length)
+        setLastArrayLength(convoHistroy.length)// set the length equal to the current length
       });
       setHasGottenAnalytics(true);
     }
