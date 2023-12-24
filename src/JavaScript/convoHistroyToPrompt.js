@@ -14,7 +14,11 @@ function convoHistroy() {
         const complete = `"${person}: ${message}"`
         newString += complete
     }
-    const newPrompt = `You are an AI conversation bot designed to help users practice their conversation abilities.if the humans asks any personal questions use fictional data instead. Encourage users to engage in diverse and meaningful conversations.Limit your response to a few sentences.this is the history of the conversation, it is your turn: ${newString}`
+    const newPrompt = `You are an AI conversation bot designed to help users practice their 
+                        conversation abilities.if the humans asks any personal questions use 
+                        fictional data instead. Encourage users to engage in diverse and meaningful 
+                        conversations.Limit your response to a few sentences.this is the history of 
+                        the conversation, it is your turn: ${newString}`
     return newPrompt
 }
 export default convoHistroy

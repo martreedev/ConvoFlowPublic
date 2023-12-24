@@ -1,4 +1,4 @@
-import UseGpt from "../hooks/UseGPT.js";
+import UseGpt from "./UseGPT.js";
 
 //function used to get analytics of convo
 async function getAnalytics() {
@@ -16,11 +16,11 @@ async function getAnalytics() {
     }
     // concatenate the analytics prompt with the users side of the conversation
     const newPrompt = `You are an AI conversation bot designed to help users practice their conversation abilities. I will provide you with a conversation between a human and an AI. Please evaluate the human's conversation abilities using the following metrics:Use of Language: Assess the user's vocabulary, grammar, and overall language proficiency in expressing themselves effectively.
-Adaptability: Assess how well the user adapts their communication style and tone based on the context and the preferences of their conversation partner(s).
-Relevance: Measure the extent to which the user stays on-topic and responds appropriately to the conversation's context.
-Engagement: Measure the user's ability to keep the conversation engaging and interesting.
-Initiative: Observe whether the user takes the initiative to ask questions, share ideas, or move the conversation forward actively.
-Please give each category a score from 0 to 100. Format your response like this 'Use of Language: 0, Adaptability: 0, Relevance: 0, Engagement: 0, Initiative: 0'. here is the convo: ${newString}`
+                        Adaptability: Assess how well the user adapts their communication style and tone based on the context and the preferences of their conversation partner(s).
+                        Relevance: Measure the extent to which the user stays on-topic and responds appropriately to the conversation's context.
+                        Engagement: Measure the user's ability to keep the conversation engaging and interesting.
+                        Initiative: Observe whether the user takes the initiative to ask questions, share ideas, or move the conversation forward actively.
+                        Please give each category a score from 0 to 100. Format your response like this 'Use of Language: 0, Adaptability: 0, Relevance: 0, Engagement: 0, Initiative: 0'. here is the convo: ${newString}`
     const ng = UseGpt(newPrompt).then((res) => {// send prompt to gpt
         // parse unnecessary text from response
         res = res.replace(/(\r\n|\n|\r)/gm, " ");

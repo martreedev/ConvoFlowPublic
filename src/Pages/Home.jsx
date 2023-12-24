@@ -8,19 +8,19 @@ import { useSpeechRecognition } from "react-speech-kit";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
-import SupportedBrowsers from "../hooks/ListOfBrowsers";
-import UseGpt from "../hooks/UseGPT";
-import handleTextToSpeech from "../hooks/useTextToSpeech";
+import SupportedBrowsers from "../Components/ListOfBrowsers";
+import UseGpt from "../JavaScript/UseGPT";
+import handleTextToSpeech from "../JavaScript/useTextToSpeech";
 import logo from "../images/logo.png";
 import gptlogo from "../images/gptlogo.png";
 import pfp from "../images/pfp.jpg";
-import parseText from "../js/parseText";
+import parseText from "../JavaScript/parseText";
 import premadeAudio from "../audio/premadeAudio.mp3";
 import mic from "../images/mic.png";
 import micon from "../images/mic-red.png";
 import micDisabled from "../images/mic-disabled.png";
 import { Oval } from "react-loader-spinner";
-import convoHistroy from "../js/convoHistroyToPrompt";
+import convoHistroy from "../JavaScript/convoHistroyToPrompt";
 import {
   BarChart,
   Bar,
@@ -31,22 +31,16 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
-import getAnalytics from "../js/convoAnalytics";
+import getAnalytics from "../JavaScript/convoAnalytics";
 
 export default function Home() {
-  const [HasRun, setHasRun] = useState(false);// used to remove the analytics from local storage on page refresh
   const [showAnylatics, setShowAnylatics] = useState(false);// conditional to render analytics page
-  if (!HasRun) {
+
+  useEffect(() => {//used to remove the analytics from local storage on page refresh
     localStorage.removeItem("analytics");
     localStorage.setItem("conversation-data", JSON.stringify([]));
-    setHasRun(true);
-  }
 
-  //AI speech states
-  const [audio, setAudio] = useState(null);// audio object for the Eleven labs api audio
-  const [IsSpeaking, setIsSpeaking] = useState(false);// if the AI is currently speaking
-  const [IsLoading, setIsLoading] = useState(false); // if the AI is currently loading speech
-
+  }, [])
   //User states
   const [isRecording, setisRecording] = useState(false); // used to determine if the user microphone is currently being recorded
   const [value, setValue] = useState("");// users transcripted voice data as text
@@ -80,7 +74,6 @@ export default function Home() {
   });
   ////////////////////
 
-
   let ConvoList = JSON.parse(localStorage.getItem("conversation-data")) || [];// conversation pulled from local storage
 
   // if the user doesnt wish to start the convo
@@ -89,12 +82,12 @@ export default function Home() {
       //pull the conversation data from local storage
       let existingArray =
         JSON.parse(localStorage.getItem("conversation-data")) || [];
-      let myObject = [
+      let AI_First_words = [
         "AI",
         "Hey there! Nice to meet you. I couldn't help but notice your friendly vibe. Mind if we strike up a conversation?",
       ];
       // push the first conversation node into the array and save it back into local storage
-      existingArray.push(myObject);
+      existingArray.push(AI_First_words);
       localStorage.setItem("conversation-data", JSON.stringify(existingArray));
 
       //set the audio state to the premade conversation audio
@@ -110,6 +103,12 @@ export default function Home() {
     transcriptDiv.scrollTop = transcriptDiv.scrollHeight;
   };
   useEffect(scrollToBottom, [ConvoList]);
+
+
+  //AI speech states
+  const [audio, setAudio] = useState(null);// audio object for the Eleven labs api audio
+  const [IsSpeaking, setIsSpeaking] = useState(false);// if the AI is currently speaking
+  const [IsLoading, setIsLoading] = useState(false); // if the AI is currently loading speech
 
   // if there is an audio object in the usestate and this function is called it will pause it
   const stopAI = () => {
@@ -361,14 +360,14 @@ export default function Home() {
                       // Then check if the AI is speaking
                       !IsSpeaking ? (
                         // If it isn't, then check if we are recording
-                        !isRecording ? (
+                        !isRecording ? (// if youre not recording, then start recording
                           <button
                             onClick={startRecording}
                             className="RecordingButton"
                           >
                             <img src={mic} className="RecordingIMG" />
                           </button>
-                        ) : (
+                        ) : (// else if you are recording, then stop
                           <button
                             onClick={stopRecording}
                             className="RecordingButton"
